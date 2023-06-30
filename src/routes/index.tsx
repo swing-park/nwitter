@@ -1,20 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useRecoilState } from "recoil";
 import Home from "./Home";
 import Auth from "./Auth";
-import { isLoggedInState } from "store/atoms";
+import KakaoRedirect from "./KakaoRedirect";
 
 const Router = () => {
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-
   return (
     <BrowserRouter>
       <Routes>
-        {isLoggedIn ? (
-          <Route path="/" element={<Home />} />
-        ) : (
-          <Route path="/" element={<Auth />} />
-        )}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Auth />} />
+        <Route path="/callback/kakaotalk" element={<KakaoRedirect />} />
       </Routes>
     </BrowserRouter>
   );
