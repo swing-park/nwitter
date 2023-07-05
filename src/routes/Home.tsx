@@ -1,3 +1,10 @@
-const Home = () => <div>Home</div>;
+import { Nav } from "components";
+
+const Home = () => (
+  <div>
+    <Nav />
+    Home
+  </div>
+);
 
 export default Home;
