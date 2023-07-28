@@ -11,7 +11,6 @@ const Router = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/login" element={<Auth />} />
         <Route path="/callback/kakaotalk" element={<KakaoRedirect />} />
       </Routes>
     </BrowserRouter>

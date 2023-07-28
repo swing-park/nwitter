@@ -10,6 +10,7 @@ interface Auth {
 
 const KakaoRedirect = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const code = searchParams.get("code");
 
