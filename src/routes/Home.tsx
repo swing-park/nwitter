@@ -1,9 +1,9 @@
-import { Nav } from "components";
+import { Nav, NweetForm } from "components";
 
 const Home = () => (
   <div>
     <Nav />
-    Home
+    <NweetForm />
   </div>
 );
 
