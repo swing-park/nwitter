@@ -1,9 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { addDoc, collection, FirestoreError } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  FirestoreError,
+  getDocs,
+  query,
+} from "firebase/firestore";
+import { Nweet } from "types";
 
 const NweetForm = () => {
   const [nweet, setNweet] = useState("");
+  const [nweets, setNweets] = useState<Nweet[]>([]);
+
+  const fetchNweets = async () => {
+    const getNweetsQuery = query(collection(db, "nweets"));
+    const getNweetsQuerySnapshot = await getDocs(getNweetsQuery);
+
+    getNweetsQuerySnapshot.forEach((doc) => {
+      const nweetObj = {
+        ...doc.data(),
+        id: doc.id,
+      };
+      setNweets((prev) => [nweetObj, ...prev]);
+    });
+  };
+
+  useEffect(() => {
+    fetchNweets();
+  }, []);
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,6 +58,13 @@ const NweetForm = () => {
         />
         <input type="submit" value="Nweet" />
       </form>
+      <div>
+        {nweets.map((nweet) => (
+          <div key={nweet.id}>
+            <h4>{nweet.nweet}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
