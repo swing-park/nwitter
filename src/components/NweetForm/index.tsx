@@ -4,25 +4,31 @@ import {
   addDoc,
   collection,
   FirestoreError,
-  getDocs,
+  onSnapshot,
+  orderBy,
   query,
 } from "firebase/firestore";
 import { Nweet } from "types";
+import { useRecoilState } from "recoil";
+import { userState } from "store/atoms";
 
 const NweetForm = () => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState<Nweet[]>([]);
+  const user = useRecoilState(userState);
 
-  const fetchNweets = async () => {
-    const getNweetsQuery = query(collection(db, "nweets"));
-    const getNweetsQuerySnapshot = await getDocs(getNweetsQuery);
+  const fetchNweets = () => {
+    const getNweetsQuery = query(
+      collection(db, "nweets"),
+      orderBy("createdAt", "desc")
+    );
 
-    getNweetsQuerySnapshot.forEach((doc) => {
-      const nweetObj = {
-        ...doc.data(),
+    onSnapshot(getNweetsQuery, (snapshot) => {
+      const nweetArr = snapshot.docs.map((doc) => ({
         id: doc.id,
-      };
-      setNweets((prev) => [nweetObj, ...prev]);
+        ...doc.data(),
+      }));
+      setNweets(nweetArr);
     });
   };
 
@@ -34,13 +40,14 @@ const NweetForm = () => {
     e.preventDefault();
     try {
       await addDoc(collection(db, "nweets"), {
-        nweet,
+        text: nweet,
         createdAt: Date.now(),
+        uid: user[0]?.uid,
       });
     } catch (err) {
-      console.error((err as FirestoreError).code);
-      console.error((err as FirestoreError).message);
+      console.error(err as FirestoreError);
     }
+
     setNweet("");
   };
 
@@ -61,7 +68,7 @@ const NweetForm = () => {
       <div>
         {nweets.map((nweet) => (
           <div key={nweet.id}>
-            <h4>{nweet.nweet}</h4>
+            <h4>{nweet.text}</h4>
           </div>
         ))}
       </div>
